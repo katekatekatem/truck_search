@@ -41,18 +41,18 @@ DEBUG=False
 
 Перейдите в папку проекта truck_search и запустите оркестр контейнеров:
 
-> docker-compose up -d
+> docker-compose up
 
 После успешного запуска контейнеров выполните миграции:
 
-> docker exec backend python manage.py migrate
+> docker exec truck_search-backend-1 python manage.py migrate
 
 Создать суперюзера:
 
-> docker exec backend python manage.py createsuperuser
+> docker exec -it truck_search-backend-1 python manage.py createsuperuser
 
 Импорт данных в БД:
 
-> docker exec backend python manage.py import_data
+> docker exec truck_search-backend-1 python manage.py import_data
 
 Запустится проект и будет доступен по адресу [localhost:8000](http://localhost:8000/).

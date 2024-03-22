@@ -48,5 +48,5 @@ class Command(BaseCommand):
                 mymodel = Truck()
                 mymodel.number = row[1]
                 mymodel.max_weight = row[2]
-                mymodel.location = row[3]
+                mymodel.location = Location.objects.get(zip=row[3])
                 mymodel.save()

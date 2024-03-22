@@ -52,21 +52,21 @@ class CargoListSerializer(serializers.ModelSerializer):
         max_distance = self.context['request'].query_params.get('max_distance')
 
         if min_distance and max_distance:
-            truck_distances = [
-                (d for d in truck_distances if float(min_distance)
-                 <= d['distance_miles'] <= float(max_distance))
-            ]
+            truck_distances = list(
+                d for d in truck_distances if float(min_distance)
+                <= d['distance_miles'] <= float(max_distance)
+            )
         elif min_distance:
-            truck_distances = [
-                (d for d in truck_distances if d['distance_miles']
-                 >= float(min_distance))
-            ]
+            truck_distances = list(
+                d for d in truck_distances if d['distance_miles']
+                >= float(min_distance)
+            )
         elif max_distance:
-            truck_distances = [
-                (d for d in truck_distances if d['distance_miles']
-                 <= float(max_distance))
-            ]
-        return truck_distances
+            truck_distances = list(
+                d for d in truck_distances if d['distance_miles']
+                <= float(max_distance)
+            )
+        return len(truck_distances)
 
     class Meta:
         model = Cargo

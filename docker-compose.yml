@@ -15,6 +15,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file: ./truck_search/.env
+    restart: always
     ports:
       - 8000:8000
     volumes:
