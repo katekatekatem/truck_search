@@ -11,7 +11,7 @@ e-mail: muzhzhukhina@mail.ru
 
 ### **Используемые технологии:**
 
-Python 3, Django, Django Rest Framework, PostgreSQL, Docker
+Python 3, Django, Django Rest Framework, PostgreSQL, Redis, Celery, Docker
 
 
 ### **База данных и переменные окружения:**
@@ -30,6 +30,8 @@ DB_PORT=5432
 SECRET_KEY='Здесь указать секретный ключ'
 ALLOWED_HOSTS='Здесь указать имя или IP хоста' (для локального запуска - 127.0.0.1)
 DEBUG=False
+REDIS_HOST=redis
+REDIS_PORT=6379
 ```
 
 
@@ -43,15 +45,11 @@ DEBUG=False
 
 > docker-compose up
 
-После успешного запуска контейнеров выполните миграции:
-
-> docker exec truck_search-backend-1 python manage.py migrate
-
 Создать суперюзера:
 
 > docker exec -it truck_search-backend-1 python manage.py createsuperuser
 
-Импорт данных в БД:
+Импорт данных в БД (обратите внимание, импорт данных может занять какое-то время):
 
 > docker exec truck_search-backend-1 python manage.py import_data
 

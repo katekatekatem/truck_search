@@ -10,11 +10,20 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:latest
+    env_file: ./truck_search/.env
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     env_file: ./truck_search/.env
+    working_dir: /app/truck_search
+    command: >
+      sh -c "./wait-for-it.sh db:5432 &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     restart: always
     ports:
       - 8000:8000
@@ -22,3 +31,31 @@ services:
       - ../data:/app/data
     depends_on:
       - db
+      - redis
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ./truck_search/.env
+    working_dir: /app/truck_search
+    command: sh -c "./wait-for-it.sh backend:8000 &&
+                    celery -A truck_search worker --pool=solo -l info"
+    restart: always
+    volumes:
+      - ../data:/app/data
+    depends_on:
+      - backend
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ./truck_search/.env
+    working_dir: /app/truck_search
+    command: celery -A truck_search beat -l info
+    restart: always
+    volumes:
+      - ../data:/app/data
+    depends_on:
+      - celery_worker
