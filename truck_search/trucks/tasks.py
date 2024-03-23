@@ -1,20 +1,14 @@
-import asyncio
 import random
-import threading
-import time
 
-from .models import Truck, Location
+from truck_search.celery import app
 
 
+@app.task()
 def update_locations():
-    while True:
-        trucks = Truck.objects.all()
-        for truck in trucks:
-            available_locations = Location.objects.all()
-            random_location = random.choice(available_locations)
-            truck.location = random_location
-            truck.save()
-        time.sleep(180)
-
-update_thread = threading.Thread(target=update_locations)
-update_thread.start()
+    from trucks.models import Location, Truck
+    trucks = Truck.objects.all()
+    for truck in trucks:
+        available_locations = Location.objects.exclude(id=truck.location.id)
+        random_location = random.choice(available_locations)
+        truck.location = random_location
+        truck.save()
